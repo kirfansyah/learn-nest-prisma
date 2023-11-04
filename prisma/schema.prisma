@@ -14,10 +14,10 @@ datasource db {
   id Int       @id @default(autoincrement())
   name        String
   email       String   @unique
-  password String
-  image       String?
-  isActive Boolean  @default(true)
-  roleId Int
+  password    String
+  image       String? @default("default.jpg")
+  isActive    Int?  @default(1)
+  roleId Int @default(2)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   role UserRole    @relation(fields: [roleId], references: [id])
@@ -44,7 +44,7 @@ model UserSubMenu {
   title    String
   url      String
   icon     String
-  isActive Boolean  @default(true)
+  isActive Int  @default(1)
   menu     UserMenu @relation(fields: [menuId], references: [id])
   subSubMenus UserSubSubMenu[]
 }
