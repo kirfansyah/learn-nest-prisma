@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+ model User {
+  id Int       @id @default(autoincrement())
+  name        String
+  email       String   @unique
+  password String
+  image       String?
+  isActive Boolean  @default(true)
+  roleId Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  role UserRole    @relation(fields: [roleId], references: [id])
+}
+
+model UserRole {
+  id Int       @id @default(autoincrement())
+  role String
+  users User[]
+  accessMenus UserAccessMenu[]
+}
+
+model UserMenu {
+  id      Int     @id @default(autoincrement())
+  menuName String
+  icon     String
+  subMenus UserSubMenu[]
+  accessMenus UserAccessMenu[]
+}
+
+model UserSubMenu {
+  id       Int      @id @default(autoincrement())
+  menuId   Int
+  title    String
+  url      String
+  icon     String
+  isActive Boolean  @default(true)
+  menu     UserMenu @relation(fields: [menuId], references: [id])
+  subSubMenus UserSubSubMenu[]
+}
+
+model UserSubSubMenu {
+  id            Int      @id @default(autoincrement())
+  subMenuId     Int
+  title         String
+  url           String
+  icon          String
+  isActive      Boolean  @default(true)
+  subMenu       UserSubMenu @relation(fields: [subMenuId], references: [id])
+  subSubSubMenus UserSubSubSubMenu[]
+}
+
+model UserSubSubSubMenu {
+  id             Int      @id @default(autoincrement())
+  subSubMenuId   Int
+  title          String
+  url            String
+  icon           String
+  isActive       Boolean  @default(true)
+  subSubMenu     UserSubSubMenu @relation(fields: [subSubMenuId], references: [id])
+}
+
+model UserAccessMenu {
+  id      Int       @id @default(autoincrement())
+  roleId  Int
+  menuId  Int
+  role    UserRole  @relation(fields: [roleId], references: [id])
+  menu    UserMenu  @relation(fields: [menuId], references: [id])
+}
